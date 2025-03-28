@@ -1,0 +1,442 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SreeyaTube</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Roboto', Arial, sans-serif;
+        }
+        
+        body {
+            background-color: #f9f9f9;
+        }
+        
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 25px;
+            background-color: #ff0000; /* YouTube red */
+            color: white;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+        
+        .logo img {
+            height: 30px;
+            margin-right: 10px;
+        }
+        
+        .logo-text {
+            font-size: 20px;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .age-badge {
+            background-color: white;
+            color: #ff0000;
+            padding: 2px 6px;
+            border-radius: 10px;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+        
+        .search-bar {
+            display: flex;
+            flex-grow: 1;
+            max-width: 600px;
+            margin: 0 20px;
+        }
+        
+        .search-bar input {
+            width: 100%;
+            padding: 10px 15px;
+            border: none;
+            border-radius: 20px 0 0 20px;
+            font-size: 16px;
+        }
+        
+        .search-bar button {
+            padding: 10px 20px;
+            border: none;
+            border-left: none;
+            border-radius: 0 20px 20px 0;
+            background-color: #f8f8f8;
+            cursor: pointer;
+        }
+        
+        .user-actions {
+            display: flex;
+            align-items: center;
+        }
+        
+        .user-actions i {
+            margin: 0 10px;
+            font-size: 20px;
+            color: white;
+            cursor: pointer;
+        }
+        
+        .user-actions img {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            margin-left: 15px;
+            border: 2px solid white;
+        }
+        
+        .sidebar {
+            width: 240px;
+            position: fixed;
+            top: 70px;
+            bottom: 0;
+            left: 0;
+            background-color: white;
+            overflow-y: auto;
+            padding: 15px 0;
+        }
+        
+        .sidebar-section {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .sidebar-item {
+            display: flex;
+            align-items: center;
+            padding: 10px 25px;
+            cursor: pointer;
+        }
+        
+        .sidebar-item:hover {
+            background-color: #f0f0f0;
+        }
+        
+        .sidebar-item i {
+            margin-right: 20px;
+            font-size: 18px;
+            color: #606060;
+        }
+        
+        .sidebar-item.active i {
+            color: #ff0000;
+        }
+        
+        .main-content {
+            margin-left: 240px;
+            padding: 20px;
+        }
+        
+        .welcome-banner {
+            background: linear-gradient(135deg, #ff0000, #ff6b6b);
+            color: white;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        
+        .categories {
+            display: flex;
+            overflow-x: auto;
+            padding: 10px 0;
+            margin-bottom: 20px;
+        }
+        
+        .category {
+            padding: 8px 12px;
+            margin-right: 10px;
+            background-color: #e0e0e0;
+            border-radius: 16px;
+            white-space: nowrap;
+            cursor: pointer;
+        }
+        
+        .category.active {
+            background-color: #ff0000;
+            color: white;
+        }
+        
+        .videos {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+        
+        .video-card {
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+        
+        .video-card:hover {
+            transform: scale(1.03);
+        }
+        
+        .thumbnail {
+            position: relative;
+            margin-bottom: 10px;
+        }
+        
+        .thumbnail img {
+            width: 100%;
+            border-radius: 10px;
+            transition: border-radius 0.3s;
+        }
+        
+        .video-card:hover .thumbnail img {
+            border-radius: 0;
+        }
+        
+        .duration {
+            position: absolute;
+            bottom: 10px;
+            right: 8px;
+            background-color: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 3px 6px;
+            border-radius: 4px;
+            font-size: 12px;
+        }
+        
+        .video-info {
+            display: flex;
+        }
+        
+        .channel-icon {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin-right: 12px;
+        }
+        
+        .video-title {
+            font-weight: 500;
+            margin-bottom: 6px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .channel-name, .video-stats {
+            font-size: 14px;
+            color: #606060;
+        }
+        
+        footer {
+            text-align: center;
+            padding: 20px;
+            margin-top: 30px;
+            color: #606060;
+            font-size: 14px;
+        }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <header>
+        <div class="logo">
+            <i class="fas fa-bars"></i>
+            <img src="https://www.youtube.com/yts/img/yt_1200-vflhSIVnY.png" alt="YouTube Logo">
+            <div class="logo-text">SreeyaTube</div>
+            <div class="age-badge">19</div>
+        </div>
+        
+        <div class="search-bar">
+            <input type="text" placeholder="Search videos...">
+            <button><i class="fas fa-search"></i></button>
+        </div>
+        
+        <div class="user-actions">
+            <i class="fas fa-video"></i>
+            <i class="fas fa-th"></i>
+            <i class="fas fa-bell"></i>
+            <img src="https://randomuser.me/api/portraits/women/19.jpg" alt="Sreeya">
+        </div>
+    </header>
+    
+    <div class="sidebar">
+        <div class="sidebar-section">
+            <div class="sidebar-item active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-fire"></i>
+                <span>Trending</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-bookmark"></i>
+                <span>Subscriptions</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-item">
+                <i class="fas fa-play-circle"></i>
+                <span>Library</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-history"></i>
+                <span>History</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-heart"></i>
+                <span>Liked videos</span>
+            </div>
+        </div>
+        
+        <div class="sidebar-section">
+            <div class="sidebar-item">
+                <i class="fas fa-music"></i>
+                <span>Music</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-gamepad"></i>
+                <span>Gaming</span>
+            </div>
+            <div class="sidebar-item">
+                <i class="fas fa-utensils"></i>
+                <span>Cooking</span>
+            </div>
+        </div>
+    </div>
+    
+    <div class="main-content">
+        <div class="welcome-banner">
+            <h2>Welcome back, Sreeya!</h2>
+            <p>Your personalized video recommendations</p>
+        </div>
+        
+        <div class="categories">
+            <div class="category active">All</div>
+            <div class="category">Music</div>
+            <div class="category">Gaming</div>
+            <div class="category">Cooking</div>
+            <div class="category">Fashion</div>
+            <div class="category">Travel</div>
+            <div class="category">Study</div>
+            <div class="category">Recently uploaded</div>
+        </div>
+        
+        <div class="videos">
+            <!-- Video cards will be generated here -->
+        </div>
+    </div>
+
+    <footer>
+        <p>© 2023 SreeyaTube - A personalized YouTube clone for Sreeya</p>
+    </footer>
+
+    <script>
+        // Personalized video data for Sreeya
+        const videos = [
+            {
+                title: "Top Study Tips for College Students | Productivity Hacks",
+                channel: "Study With Me",
+                views: "450K views",
+                time: "3 weeks ago",
+                duration: "10:25",
+                thumbnail: "https://i.ytimg.com/vi/ujUQELeWpIs/maxresdefault.jpg",
+                channelIcon: "https://yt3.ggpht.com/ytc/AAUvwniHEhSw3F4LK2QYQ8F8L2QYQ8F8L2QYQ8F8L2QYQ8F8=s88-c-k-c0x00ffffff-no-rj"
+            },
+            {
+                title: "Easy Pasta Recipes for Beginners | Cooking Tutorial",
+                channel: "Foodie Adventures",
+                views: "1.2M views",
+                time: "2 months ago",
+                duration: "15:40",
+                thumbnail: "https://i.ytimg.com/vi/JWtFu0x4S1s/maxresdefault.jpg",
+                channelIcon: "https://yt3.ggpht.com/ytc/AAUvwnjOQiXUsXYMs8lwrd4litEEqXry1-atqJavJJ09=s88-c-k-c0x00ffffff-no-rj"
+            },
+            {
+                title: "K-pop Dance Tutorial: Beginner Friendly Moves",
+                channel: "Dance With Me",
+                views: "890K views",
+                time: "1 month ago",
+                duration: "18:15",
+                thumbnail: "https://i.ytimg.com/vi/1Rs2ND1ryYc/maxresdefault.jpg",
+                channelIcon: "https://yt3.ggpht.com/ytc/AAUvwniFZkQzWXZ6weXkwH4SGQJQ9vZ6BQJ8YH6jZbhD=s88-c-k-c0x00ffffff-no-rj"
+            },
+            {
+                title: "Travel Vlog: Best Places to Visit in 2023",
+                channel: "Wanderlust",
+                views: "2.3M views",
+                time: "5 months ago",
+                duration: "22:50",
+                thumbnail: "https://i.ytimg.com/vi/DLX62G4lc44/maxresdefault.jpg",
+                channelIcon: "https://yt3.ggpht.com/ytc/AAUvwnjOQiXUsXYMs8lwrd4litEEqXry1-atqJavJJ09=s88-c-k-c0x00ffffff-no-rj"
+            },
+            {
+                title: "JavaScript Crash Course for Beginners",
+                channel: "Code With Me",
+                views: "350K views",
+                time: "1 week ago",
+                duration: "45:20",
+                thumbnail: "https://i.ytimg.com/vi/hdI2bqOjy3c/maxresdefault.jpg",
+                channelIcon: "https://yt3.ggpht.com/ytc/AAUvwnjOQiXUsXYMs8lwrd4litEEqXry1-atqJavJJ09=s88-c-k-c0x00ffffff-no-rj"
+            },
+            {
+                title: "Morning Routine for Productivity | College Edition",
+                channel: "Life With Sreeya",
+                views: "120K views",
+                time: "2 days ago",
+                duration: "12:30",
+                thumbnail: "https://i.ytimg.com/vi/7TuQh6Y5L_4/maxresdefault.jpg",
+                channelIcon: "https://randomuser.me/api/portraits/women/19.jpg"
+            }
+        ];
+
+        // Generate video cards
+        const videosContainer = document.querySelector('.videos');
+        
+        videos.forEach(video => {
+            const videoCard = document.createElement('div');
+            videoCard.className = 'video-card';
+            videoCard.innerHTML = `
+                <div class="thumbnail">
+                    <img src="${video.thumbnail}" alt="${video.title}">
+                    <div class="duration">${video.duration}</div>
+                </div>
+                <div class="video-info">
+                    <img class="channel-icon" src="${video.channelIcon}" alt="${video.channel}">
+                    <div>
+                        <div class="video-title">${video.title}</div>
+                        <div class="channel-name">${video.channel}</div>
+                        <div class="video-stats">${video.views} • ${video.time}</div>
+                    </div>
+                </div>
+            `;
+            videosContainer.appendChild(videoCard);
+        });
+
+        // Add click event to sidebar items
+        document.querySelectorAll('.sidebar-item').forEach(item => {
+            item.addEventListener('click', function() {
+                document.querySelectorAll('.sidebar-item').forEach(i => i.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+
+        // Add click event to categories
+        document.querySelectorAll('.category').forEach(cat => {
+            cat.addEventListener('click', function() {
+                document.querySelectorAll('.category').forEach(c => c.classList.remove('active'));
+                this.classList.add('active');
+            });
+        });
+    </script>
+</body>
+</html>
